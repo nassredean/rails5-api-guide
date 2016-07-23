@@ -7,6 +7,9 @@ gem 'rails', '~> 5.0.0'
 gem 'pg', '~> 0.18'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
+# use Devise Token Auth for token based authentication
+gem 'devise_token_auth'
+gem 'omniauth'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'

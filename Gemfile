@@ -10,12 +10,11 @@ gem 'puma', '~> 3.0'
 # use Devise Token Auth for token based authentication
 gem 'devise_token_auth'
 gem 'omniauth'
+# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
+gem 'rack-cors'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
-
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
 
 group :development, :test do
   gem 'rspec-rails', '3.1.0'

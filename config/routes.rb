@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  root to: 'home#show'
+
   mount_devise_token_auth_for 'User', at: 'auth'
 
   scope module: 'api' do

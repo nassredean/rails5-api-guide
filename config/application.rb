@@ -39,5 +39,7 @@ module Devboard
       end
     end
 
+    config.middleware.use Rack::Attack
+
   end
 end

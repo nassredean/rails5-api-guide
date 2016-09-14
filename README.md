@@ -1,9 +1,7 @@
-# Building a Rails 5 API Only Application with React and Flux
+# Building a Rails 5 API Only Application
 
 ## Introduction
 This guide will help you build a web application that uses a Rails 5 API backed by postgres, and a React + Flux front end. Our Rails layer will do nothing but provide an API which serves JSON. React + Flux will handle all client side logic and UI components. This guide is basically my go to web app architecture, and along the way, we will set up quite a few niceties and must haves. By the end of this guide, you should have a fully fledged, and dare I say production ready, application skeleton which is easily deployable to heroku. Here are some of the things we will be setting up:
-
-**On the Backend**
 
 * Token based authentication with the `devise_token_auth` gem.
 * A namespaced API
@@ -13,19 +11,6 @@ This guide will help you build a web application that uses a Rails 5 API backed 
 * Local development niceties such as mailcatcher, pry/pry-nav, and useful git commit hooks
 * Background jobs with Sidekiq
 * Caching with Redis
-* Heroku deployments
-
-**On the Front End**
-
-* React and Flux for our UI architecture
-* ES6 + Babel
-* jToker for handling token authentication
-* Testing with ??? karma?
-* Compiling assets with ??? (concatenation, minification, gziping)
-* source maps??
-* Finger printing with ???
-* Webpack for tying it all together
-* Caching assets with a CDN
 
 ## Initial Setup
 
@@ -513,10 +498,78 @@ You may have noticed that we are using the `ActiveSupport::Cache::MemoryStore.ne
 
 I like to use Redis for cacheing. Some prefer Memcached. Both have their merits. But since we will be using sidekiq for job processing which requires Redis, and we may want to use action-cable, we might as well stick with Redis.
 
+First add `gem 'redis-rails'` to your Gemfile, and then run `bundle install`. Install and start redis using instructions [here](http://redis.io/topics/quickstart).
 
+In `development.rb` get rid of the block of code that looks like this:
+
+```
+  # Enable/disable caching. By default caching is disabled.
+  if Rails.root.join('tmp/caching-dev.txt').exist?
+    config.action_controller.perform_caching = true
+
+    config.cache_store = :memory_store
+    config.public_file_server.headers = {
+      'Cache-Control' => 'public, max-age=172800'
+    }
+  else
+    config.action_controller.perform_caching = false
+
+    config.cache_store = :null_store
+  end
+```
+
+And then replace with this:
+
+```
+  if ENV['REDIS_URL']
+    config.action_controller.perform_caching = true
+    config.cache_store = :redis_store, ENV['REDIS_URL']
+  else
+    config.action_controller.perform_caching = false
+    config.cache_store = :null_store
+  end
+```
+
+This way we can enable cacheing locally if we wish to test it. Usually in development cacheing is turned off, but if you want to enable it all you have to do is set the environment variable `REDIS_URL` to `redis://localhost:6379`.
+
+In `production.rb` add
+
+```
+  config.cache_store = :redis_store, ENV['REDIS_URL']
+```
+
+## Background Job Processing with Sidekiq
+This is sort of optional, but Sideiq is my go to for background job processing in ruby. It is extremely robust and efficient.
+
+
+#### Getting Started
+Add `gem 'sidekiq'` to the Gemfile and bundle.
+
+Create an `app/workers` directory, and try running a sample job:
+
+```
+class SampleWorker
+  include Sidekiq::Worker
+  def perform()
+    # do something
+  end
+end
+```
+
+You can kick it off in your console with `SampleWorker.perform_async` which will return a job ID.
+
+
+## Caching
+
+http://www.victorareba.com/tutorials/speed-your-rails-app-with-model-caching-using-redis
+https://medium.com/ruby-on-rails/easy-caching-with-rails-4-heroku-redis-5fb36381628#.o1a12hbzb
 
 
 ## Nice to Haves
+
+**Setup Rack-attack to use Default Cache**
+
+Now that we have enabled redis we can enable rack-attack to use the default cache. In `config/initializers/rack_attack.rb` remove the line `Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new`. [By default, Rack::Attack will use whichever caching backend is configured as Rails.cache.](https://github.com/kickstarter/rack-attack/issues/102)
 
 **Set up a git commit hook to stop from committing binding.pry**
 
@@ -575,16 +628,14 @@ Devise.setup do |config|
 end
 ```
 
-rack-attack
-Redis
-Sidekiq
-Front end stuff:: web pack, Es6 + babel, react + flux, jToker
-deploying to heroku
-cdn
-cacheing
 
-Things that are not necessary
-rack-mini-profiler
-omniauth
-Phusion passenger 5
-Docker
+**TO DO**
+
+* omniauth
+* Next steps: Front end
+  * webpack: concatination, minifiation, gzip, fingerprint, loading files
+  * react + flux
+  * babel + ES6
+  * jtoker
+  * sass + less'
+* Deploying to heroku: Build pack (npm, webpack, bundle, migrate), procfile (sidekiq and web), asset caching

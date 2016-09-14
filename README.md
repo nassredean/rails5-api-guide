@@ -627,15 +627,3 @@ Devise.setup do |config|
 
 end
 ```
-
-
-**TO DO**
-
-* omniauth
-* Next steps: Front end
-  * webpack: concatination, minifiation, gzip, fingerprint, loading files
-  * react + flux
-  * babel + ES6
-  * jtoker
-  * sass + less'
-* Deploying to heroku: Build pack (npm, webpack, bundle, migrate), procfile (sidekiq and web), asset caching

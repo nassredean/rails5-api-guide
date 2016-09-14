@@ -51,6 +51,7 @@ GEM
     byebug (9.0.5)
     coderay (1.1.1)
     concurrent-ruby (1.0.2)
+    connection_pool (2.2.0)
     debug_inspector (0.0.2)
     devise (4.2.0)
       bcrypt (~> 3.0)
@@ -116,6 +117,8 @@ GEM
     rack-attack (4.4.1)
       rack
     rack-cors (0.4.0)
+    rack-protection (1.5.3)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.0)
@@ -180,6 +183,11 @@ GEM
       rspec-mocks (~> 3.1.0)
       rspec-support (~> 3.1.0)
     rspec-support (3.1.2)
+    sidekiq (4.2.0)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      rack-protection (~> 1.5)
+      redis (~> 3.2, >= 3.2.1)
     slop (3.6.0)
     spring (1.7.2)
     spring-watcher-listen (2.0.0)
@@ -221,6 +229,7 @@ DEPENDENCIES
   rails (~> 5.0.0)
   redis-rails
   rspec-rails (= 3.1.0)
+  sidekiq
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data

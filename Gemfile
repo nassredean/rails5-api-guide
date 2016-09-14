@@ -18,6 +18,8 @@ gem 'rack-attack'
 gem 'active_model_serializers', '~> 0.10.0'
 # redis-rails for redis cacheing
 gem 'redis-rails'
+# Use sidekiq for background job processing
+gem 'sidekiq'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'

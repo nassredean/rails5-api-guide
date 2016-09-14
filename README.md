@@ -1,13 +1,28 @@
-# Building a Rails 5 API Only Application
+# How to Install
+
+I have included a step by step guide in this README on how I set this up. But if you just want to get up and running, here are the steps:
+
+1. Clone this repository
+2. Rename the repo `mv rails5-api-guide/ my_app`
+3. Inside your database.yml rename the database to whatever you want, otherwise it will just be named `generic_api_development`, `generic_api_test`, `generic_api_production` for each environment respectively.
+4. Rename the top level module inside `application.rb` to whatever you want otherwise it will be named `GenericApi`
+5. Run `bundle install`
+6. Run `bundle exec rake db:create`
+7. Run `bundle exec rake db:migrate; RAILS_ENV=test bundle exec rake db:migrate`
+8. Boot up the server with `rails s` and navigate to localhost:3000 to see your new rails application
+
+If you are interested in how this app was setup and what is included read on.
+
+# Setting up a Rails 5 API Only Application: Step by Step Guide
 
 ## Introduction
-This guide will help you build a web application that uses a Rails 5 API backed by postgres, and a React + Flux front end. Our Rails layer will do nothing but provide an API which serves JSON. React + Flux will handle all client side logic and UI components. This guide is basically my go to web app architecture, and along the way, we will set up quite a few niceties and must haves. By the end of this guide, you should have a fully fledged, and dare I say production ready, application skeleton which is easily deployable to heroku. Here are some of the things we will be setting up:
+This guide shows you how I setup my default Rails architecture, now updated for Rails 5. Our Rails layer will do nothing but provide an API which serves JSON, and process background jobs. Here are some of the things we will be setting up:
 
 * Token based authentication with the `devise_token_auth` gem.
 * A namespaced API
 * Serialization with Active Model Serializers
 * Testing with rspec and factory girl
-* Rate limiting and throttling with rack-attack
+* Useful rack middleares like rack-attack for rate limiting and throttling with rack-cors.
 * Local development niceties such as mailcatcher, pry/pry-nav, and useful git commit hooks
 * Background jobs with Sidekiq
 * Caching with Redis

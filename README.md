@@ -51,14 +51,14 @@ Boot up the server with the command `rails s` inside the project directory. Visi
 
 **Add rspec, factory girl, and pry to test and development**
 
-Lets go ahead and a add a couple gems that will be very useful for testing and development. I prefer to use rspec for testing purposes, but some of you might wan't to stick with minitest, if that's the case you can just ignore the `rspec-rails` gem. If not add `rspec-rails` and `factory_girl_rails`. FactoryGirl will let us easily create and mock test objects. The gem `pry-rails` provides a very handy interactive console when using rails c, `pry-byebug` gives you powerful break points and `pry-stack_expolorer` rounds out the package with a very solid stack explorer.
+Lets go ahead and a add a couple gems that will be very useful for testing and development. I prefer to use rspec for testing purposes, but some of you might wan't to stick with minitest, if that's the case you can just ignore the `rspec-rails` gem. If not add `rspec-rails` and `factory_bot_rails`. FactoryBot will let us easily create and mock test objects. The gem `pry-rails` provides a very handy interactive console when using rails c, `pry-byebug` gives you powerful break points and `pry-stack_expolorer` rounds out the package with a very solid stack explorer.
 
 Open Gemfile, add the following. You can get rid of whatever else was in the :development, :test group
 
 ```
 group :development, :test do
-  gem 'rspec-rails', '3.1.0'
-  gem 'factory_girl_rails'
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
   gem 'pry-rails'
   gem 'pry-byebug'
   gem 'pry-stack_explorer'
@@ -190,7 +190,7 @@ Our API will be responsible for rendering JSON responses, and that's about it. I
 
 **Install ActiveModelSerializers**
 
-Add `gem 'active_model_serializers', '~> 0.10.0'` to the Gemfile and run `bundle install`.
+Add `gem 'active_model_serializers'` to the Gemfile and run `bundle install`.
 
 Add a config file in the location `config/initializers/active_model_serializer.rb` with the code:
 
@@ -371,7 +371,7 @@ Fantastic. At this point we have a bare minimum rails 5 api. Our routes are name
 
 We sent some time setting up rspec and some useful debugging tools like pry-nav and factory girl, but we haven't actually written any tests yet. Why don't we go ahead and set up our first spec.
 
-First we need to set up factory girl. At the top of our `spec/spec_helper.rb` we need to explicitly require it as follows: `require 'factory_girl_rails'`. Then to gain access to the FactoryGirl DSL inside our specs we need to add the following line `config.include FactoryGirl::Syntax::Methods` within our config block. Then inside of our `.rspec` file we need to add the following line `--require rails_helper`. We can go ahead and get rid of the line `--require spec_helper`, since the `rails_helper` includes the `spec_helper`. If we don't do this RSpec Cannot find the Controllers and throws an Uninitialized Constant error. See [here](http://stackoverflow.com/questions/26288113/rspec-cannot-find-my-controllers-uninitialized-constant) for more information.
+First we need to set up factory bot. At the top of our `spec/spec_helper.rb` we need to explicitly require it as follows: `require 'factory_girl_rails'`. Then to gain access to the FactoryBot DSL inside our specs we need to add the following line `config.include FactoryBot::Syntax::Methods` within our config block. Then inside of our `.rspec` file we need to add the following line `--require rails_helper`. We can go ahead and get rid of the line `--require spec_helper`, since the `rails_helper` includes the `spec_helper`. If we don't do this RSpec Cannot find the Controllers and throws an Uninitialized Constant error. See [here](http://stackoverflow.com/questions/26288113/rspec-cannot-find-my-controllers-uninitialized-constant) for more information.
 
 Now lets set up a very simple test for the users controller in the location `spec/controllers/api/v1/users_controller_spec.rb`.
 
@@ -381,7 +381,7 @@ require 'spec_helper'
 describe Api::V1::UsersController do
   describe "GET #show" do
     before(:each) do
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       auth_headers = @user.create_new_auth_token
       request.headers.merge!(auth_headers)
       get :show, id: @user.id
@@ -426,7 +426,7 @@ describe Api::V1::UsersController do
 
   describe 'GET #index' do
     before(:each) do
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       auth_headers = @user.create_new_auth_token
       request.headers.merge!(auth_headers)
       get :index, id: @user.id
@@ -484,7 +484,7 @@ class Rack::Attack
   Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
   # Allow all local traffic
-  whitelist('allow-localhost') do |req|
+  safelist('allow-localhost') do |req|
     '127.0.0.1' == req.ip || '::1' == req.ip
   end
 

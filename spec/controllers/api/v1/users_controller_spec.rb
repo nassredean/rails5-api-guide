@@ -5,7 +5,7 @@ describe Api::V1::UsersController do
   describe 'GET #show' do
 
     before(:each) do
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       auth_headers = @user.create_new_auth_token
       request.headers.merge!(auth_headers)
       get :show, id: @user.id
@@ -24,7 +24,7 @@ describe Api::V1::UsersController do
   describe 'GET #index' do
 
     before(:each) do
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       auth_headers = @user.create_new_auth_token
       request.headers.merge!(auth_headers)
       get :index, id: @user.id

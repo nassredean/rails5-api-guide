@@ -26,7 +26,7 @@ gem 'sidekiq'
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'pry-rails'
   gem 'pry-byebug'
   gem 'pry-stack_explorer'
